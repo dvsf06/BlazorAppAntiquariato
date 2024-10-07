@@ -1,0 +1,70 @@
+﻿@page "/"
+
+<PageTitle>Index</PageTitle>
+
+<h1>Fiera di Pisa</h1>
+<button @onclick="CaricaDatiArchivioClick">Carica i dati</button>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th scope="col">Codice</th>
+            <th scope="col">Cognome</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Zona</th>
+            <th scope="col">Superficie</th>
+            <th scope="col">Coperto</th>
+            <th scope="col">Data inizio esposizione</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in myList) //per ogni oggetto nella lista scrivo i valori su una riga
+        {
+            <tr>
+                <th scope="row">@item.idStand</th>
+                <td>@item.cognome</td>
+                <td>@item.nome</td>
+                <td>@item.zona</td>
+                <td>@item.superficie</td>
+                <td>@(item.isCoperto ? "Si" : "No")</td>
+                <td>@item.dataInizio.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    List<Stand> myList = new List<Stand>();
+
+    private void CaricaDatiArchivioClick()
+    {
+        myList.Clear();
+
+        string connString = "Data Source=Data/dbAntiquariato.db";
+        SqliteConnection myConn = new SqliteConnection(connString);
+        SqliteCommand myCommand = new SqliteCommand("SELECT * FROM tblStands;");
+        SqliteDataReader myDr;
+        myCommand.Connection = myConn;
+
+
+        myConn.Open();
+        myDr = myCommand.ExecuteReader();
+
+        while (myDr.Read())
+        {
+            Stand nuovoStand = new Stand
+                {
+                    idStand = Convert.ToInt32(myDr["idStand"]),
+                    nome = Convert.ToString(myDr["nome"]),
+                    cognome = Convert.ToString(myDr["cognome"]),
+                    zona = Convert.ToChar(myDr["zona"]),
+                    superficie = Convert.ToByte(myDr["superficie"]),
+                    isCoperto = Convert.ToBoolean(myDr["isCoperto"]),
+                    dataInizio = Convert.ToDateTime(myDr["dataInizio"])
+                };
+            myList.Add(nuovoStand);
+        }
+        myConn.Close();
+    }
+
+}
