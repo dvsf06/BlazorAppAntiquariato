@@ -1,0 +1,51 @@
+﻿@page "/dettagliooggetto/{IdOggetto:int}"
+
+<h3>Dettaglio Oggetto</h3>
+
+<div class="card" style="width: 18rem;">
+  <img src="..." class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">@myOggetto.tipo</h5>
+    <p class="card-text">Prezzo: @myOggetto.prezzoEsposto €</p>
+  </div>
+</div>
+
+@code {
+    [Parameter]
+    public int IdOggetto { get; set; }
+
+    Oggetto? myOggetto;
+
+    private void CaricaDatiArchivio()
+    {
+        string connString = "Data Source=Data/dbAntiquariato.db";
+        SqliteConnection myConn = new SqliteConnection(connString);
+        SqliteCommand myCommand = new SqliteCommand($"SELECT * FROM tblOggetti WHERE idOggetto = {IdOggetto};");
+        SqliteDataReader myDr;
+        myCommand.Connection = myConn;
+
+
+        myConn.Open();
+        myDr = myCommand.ExecuteReader();
+
+        while (myDr.Read())
+        {
+            myOggetto = new Oggetto
+                {
+                    idOggetto = Convert.ToInt32(myDr["idOggetto"]),
+                    tipo = Convert.ToString(myDr["tipo"]),
+                    materialePrincipale = Convert.ToString(myDr["materialePrincipale"]),
+                    epoca = Convert.ToString(myDr["epoca"]),
+                    prezzoEsposto = Convert.ToDecimal(myDr["prezzoEsposto"]),
+                    standId = Convert.ToInt32(myDr["standId"])
+                };
+        }
+        myConn.Close();
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        CaricaDatiArchivio();
+    }
+}

@@ -11,6 +11,7 @@
             <th scope="col">Epoca</th>
             <th scope="col">Prezzo</th>
             <th scope="col">Stand</th>
+            <th scope="col">Dettagli</th>
         </tr>
     </thead>
     <tbody>
@@ -23,6 +24,7 @@
                 <td>@((item.epoca == "") ? "Non presente" : item.epoca + " secolo")</td>
                 <td>@item.prezzoEsposto €</td>
                 <td>@item.standId</td>
+                <td><a href="/dettagliooggetto/@item.idOggetto">Dettagli</a></td>
             </tr>
         }
     </tbody>
