@@ -1,6 +1,6 @@
-﻿@page "/elencooggetti"
+﻿@page "/oggettistand/{IdStand:int}"
 
-<h3>ElencoOggetti</h3>
+<h3>OggettiStand(@IdStand)</h3>
 
 <table class="table table-striped table-hover">
     <thead>
@@ -29,6 +29,9 @@
 </table>
 
 @code {
+    [Parameter]
+    public int IdStand { get; set; }
+
     List<Oggetto> myList = new List<Oggetto>();
 
     private void CaricaDatiArchivio()
@@ -37,7 +40,7 @@
 
         string connString = "Data Source=Data/dbAntiquariato.db";
         SqliteConnection myConn = new SqliteConnection(connString);
-        SqliteCommand myCommand = new SqliteCommand("SELECT * FROM tblOggetti;");
+        SqliteCommand myCommand = new SqliteCommand($"SELECT * FROM tblOggetti WHERE standId = {IdStand};");
         SqliteDataReader myDr;
         myCommand.Connection = myConn;
 

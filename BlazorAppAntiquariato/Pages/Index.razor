@@ -3,7 +3,6 @@
 <PageTitle>Index</PageTitle>
 
 <h1>Fiera di Pisa</h1>
-<button @onclick="CaricaDatiArchivioClick">Carica i dati</button>
 
 <table class="table table-striped table-hover">
     <thead>
@@ -15,6 +14,7 @@
             <th scope="col">Superficie</th>
             <th scope="col">Coperto</th>
             <th scope="col">Data inizio esposizione</th>
+            <th scope="col">Oggetti</th>
         </tr>
     </thead>
     <tbody>
@@ -28,6 +28,7 @@
                 <td>@item.superficie</td>
                 <td>@(item.isCoperto ? "Si" : "No")</td>
                 <td>@item.dataInizio.ToShortDateString()</td>
+                <td><a href="/oggettistand/@item.idStand">Mostra oggetti</a></td>
             </tr>
         }
     </tbody>
@@ -36,7 +37,7 @@
 @code {
     List<Stand> myList = new List<Stand>();
 
-    private void CaricaDatiArchivioClick()
+    private void CaricaDatiArchivio()
     {
         myList.Clear();
 
@@ -65,5 +66,11 @@
             myList.Add(nuovoStand);
         }
         myConn.Close();
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        CaricaDatiArchivio();
     }
 }
