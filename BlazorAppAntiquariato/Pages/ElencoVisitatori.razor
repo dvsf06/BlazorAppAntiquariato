@@ -1,0 +1,67 @@
+﻿@page "/elencovisitatori"
+
+<h3>ElencoVisitatori</h3>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th scope="col">Codice</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Cognome</th>
+            <th scope="col">Data di nascita</th>
+            <th scope="col">Età</th>
+            <th scope="col">Oggetti acquistati</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in myList) //per ogni oggetto nella lista scrivo i valori su una riga
+        {
+            <tr>
+                <th scope="row">@item.idVisitatore</th>
+                <td>@item.nome</td>
+                <td>@item.cognome</td>
+                <td>@item.dataDiNascita.ToShortDateString()</td>
+                <td>@((Math.Floor((double)(DateTime.Now.Subtract(item.dataDiNascita).Days / 365))))</td>
+                <td><a href="/oggettivisitatore/@item.idVisitatore">Mostra oggetti acquistati</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    List<Visitatore> myList = new List<Visitatore>();
+
+    private void CaricaDatiArchivio()
+    {
+        myList.Clear();
+
+        string connString = "Data Source=Data/dbAntiquariato.db";
+        SqliteConnection myConn = new SqliteConnection(connString);
+        SqliteCommand myCommand = new SqliteCommand("SELECT * FROM tblVisitatori;");
+        SqliteDataReader myDr;
+        myCommand.Connection = myConn;
+
+
+        myConn.Open();
+        myDr = myCommand.ExecuteReader();
+
+        while (myDr.Read())
+        {
+            Visitatore nuovoVisitatore = new Visitatore
+                {
+                    idVisitatore = Convert.ToInt32(myDr["idVisitatore"]),
+                    nome = Convert.ToString(myDr["nome"]),
+                    cognome = Convert.ToString(myDr["cognome"]),
+                    dataDiNascita = Convert.ToDateTime(myDr["dataDiNascita"])
+                };
+            myList.Add(nuovoVisitatore);
+        }
+        myConn.Close();
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        CaricaDatiArchivio();
+    }
+}

@@ -8,5 +8,6 @@
         public string? epoca { get; set; }
         public decimal prezzoEsposto { get; set; }
         public int standId { get; set; }
+        public int? visitatoreId { get; set; }
     }
 }
