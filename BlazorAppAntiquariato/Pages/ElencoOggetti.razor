@@ -2,7 +2,9 @@
 
 <h3>ElencoOggetti</h3>
 
-<input type="text" value="@strCerca" @onchange="CercaChange"/>
+<div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Cerca" @bind="strCerca" @bind:event="oninput">
+</div>
 
 <table class="table table-striped table-hover">
     <thead>
@@ -18,7 +20,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in myList) //per ogni oggetto nella lista scrivo i valori su una riga
+        @foreach (var item in myList.Where(k => k.tipo.Contains(strCerca))) //per ogni oggetto nella lista scrivo i valori su una riga
         {
             <tr>
                 <th scope="row">@item.idOggetto</th>
@@ -58,7 +60,7 @@
             Oggetto nuovoOggetto = new Oggetto
                 {
                     idOggetto = Convert.ToInt32(myDr["idOggetto"]),
-                    tipo = Convert.ToString(myDr["tipo"]),
+                    tipo = Convert.ToString(myDr["tipo"]).ToLower(),
                     materialePrincipale = Convert.ToString(myDr["materialePrincipale"]),
                     epoca = Convert.ToString(myDr["epoca"]),
                     prezzoEsposto = Convert.ToDecimal(myDr["prezzoEsposto"]),
@@ -74,17 +76,5 @@
     {
         base.OnInitialized();
         CaricaDatiArchivio();
-    }
-
-    private void CercaChange()
-    {
-        if(strCerca != "")
-        {
-
-        }
-        else
-        {
-            CaricaDatiArchivio();
-        }
     }
 }
